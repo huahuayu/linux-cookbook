@@ -51,6 +51,85 @@ root@1de774242804:/# cat /proc/version  #方法四
 Linux version 4.9.125-linuxkit (root@659b6d51c354) (gcc version 6.4.0 (Alpine 6.4.0) ) #1 SMP Fri Sep 7 08:20:28 UTC 2018
 ```
 
+## 查看硬件信息
+`lshw`命令可以查看硬件信息  
+
+`lscpu`命令可以查看cpu信息
+```
+root@MNG-BC ➜  ~ lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                12
+On-line CPU(s) list:   0-11
+Thread(s) per core:    2
+Core(s) per socket:    6
+Socket(s):             1
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 85
+Model name:            Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+Stepping:              4
+CPU MHz:               2499.998
+BogoMIPS:              4999.99
+Hypervisor vendor:     KVM
+Virtualization type:   full
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              33792K
+NUMA node0 CPU(s):     0-11
+Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ibrs ibpb stibp kaiser fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx avx512f rdseed adx smap avx512cd xsaveopt xsavec xgetbv1
+```
+
+
+`cat /proc/cupinfo`可以查看cpu信息，每一个核心都会列出来，以`core id`区分
+```
+root@MNG-BC ➜  ~ cat /proc/cpuinfo
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 85
+model name      : Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+stepping        : 4
+microcode       : 0x1
+cpu MHz         : 2499.998
+cache size      : 33792 KB
+physical id     : 0
+siblings        : 12
+core id         : 0
+cpu cores       : 6
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch invpcid_single ibrs ibpb stibp kaiser fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx avx512f rdseed adx smap avx512cd xsaveopt xsavec xgetbv1
+bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf
+bogomips        : 4999.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 46 bits physical, 48 bits virtual
+power management:
+```
+
+
+## 查看系统信息
+使用`uname`命令可以查看系统信息，了解系统信息对安装软件很有帮助，安装软件时必须知道是装32位还是64位，是x86架构还是i686架构呢?  
+mac示例  
+``` bash
+shiming@pro ➜  ~ uname -a
+Darwin pro 18.2.0 Darwin Kernel Version 18.2.0: Fri Oct  5 19:41:49 PDT 2018; root:xnu-4903.221.2~2/RELEASE_X86_64 x86_64
+```
+
+ubuntu示例  
+``` bash
+root@MNG-BC ➜  ~ uname -a
+Linux MNG-BC 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16 21:00:45 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+```
+
 ## 系统时间 - date
 
 ```
@@ -833,6 +912,7 @@ traceroute to 47.75.70.201 (47.75.70.201), 64 hops max, 52 byte packets
 bash内建命令，使得子进程可以复用父进程的环境变量。通过命令行敲的export命令，不管是导入还是删除都是临时的。如果需要永久保持有效需要写在~/.bashrc等配置文件中。
 
 ## unset环境变量
+`unset`命令可以删除export的环境变量
 ``` bash
 ➜  ~ export TMPVAR="XX"
 ➜  ~ printenv TMPVAR
@@ -840,7 +920,6 @@ XX
 ➜  ~ unset TMPVAR
 ➜  ~ printenv TMPVAR
 ```
-
 
 ## 查看单个环境变量
 ``` bash
@@ -1026,6 +1105,17 @@ set clipboard=unnamed
 ```
 
 以后就可以在vim中visual模式选中文字进行复制(yank)了
+
+### 写read-only文件
+有时没有用sudo打开文件，编辑后保存不了，会提示read-only，可以用以下命令将文件写进去，不用退出文件再sudo打开。  
+``` zsh
+:w !sudo tee %
+```
+命令解释：
+:w – write
+!sudo – call shell sudo command
+tee – the output of write (:w) command is redirected using tee
+% – current file name
 
 ### 常用命令列表
 
