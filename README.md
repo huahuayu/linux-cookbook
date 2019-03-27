@@ -517,7 +517,28 @@ userdel --remove tecmint           [On RedHat/CentOS based systems]
 4. 备份用户家目录
 5. 删除用户和家目录
 
+### 查看当前登录用户
+`w`命令可以查看当前登录用户
+```
+shiming@pro ➜  ~ w
+23:22  up 12:42, 3 users, load averages: 2.12 1.77 1.84
+USER     TTY      FROM              LOGIN@  IDLE WHAT
+shiming  console  -                10:40   12:41 -
+shiming  s001     -                11:19       - w
+shiming  s002     -                10:55       1 ssh root@ubuntu
+```
 
+### 查看登录记录
+`last`，`last <user_name>`可以查看登录记录，包括重启/关机记录  
+```
+shiming@pro ➜  ~ last
+shiming   ttys001                   Tue Mar 26 11:19   still logged in
+shiming   ttys002                   Tue Mar 26 10:55   still logged in
+shiming   ttys001                   Tue Mar 26 10:53 - 10:53  (00:00)
+shiming   console                   Tue Mar 26 10:40   still logged in
+reboot    ~                         Tue Mar 26 10:40
+shutdown  ~                         Tue Mar 26 10:17
+```
 ## 软件安装
 ### 二进制包
 ```
@@ -1185,6 +1206,15 @@ tee – the output of write (:w) command is redirected using tee
 | 查看帮助    | :help   | 查看帮助时切换窗口ctrl + w |
 | 个性化vim配置文件    | :e ~/.vimrc   | 查看帮助时切换窗口ctrl + w |
 
+### vim中文乱码
+如果vim中文乱码，在用户家目录下新建.vimrc文件，填入以下内容  
+```
+set fileencodings=utf-8,gbk,utf-16le,cp1252,iso-8859-15,ucs-bom
+set termencoding=utf-8
+set encoding=utf-8
+```
+
+也可以在/etc/vim/vimrc里加在最后，但是这个文件影响所有用户，在自己家目录下的.vimrc只影响自己
 
 ## 获取帮助
 ### 搜索帮助主题
@@ -1636,8 +1666,13 @@ ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/loca
 ```
 参考 https://olivierlacan.com/posts/launch-sublime-text-3-from-the-command-line/
 
+## 隐藏身份
+清除Linux的最近登录日志和Bash历史 http://topspeedsnail.com/clear-last-linux-login-log/  
+使用tor实现匿名扫描/SSH登录 http://topspeedsnail.com/use-tor-hide-your-ass/  
+
 ## troubleshooting
-### -bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directory
+### 字符编码问题
+**-bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directory**
 centos ssh登录，登录成功但是报 -bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directory
 ```
 ➜  ~ ssh shiming@10.211.55.13
