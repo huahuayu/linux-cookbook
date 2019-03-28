@@ -539,6 +539,57 @@ shiming   console                   Tue Mar 26 10:40   still logged in
 reboot    ~                         Tue Mar 26 10:40
 shutdown  ~                         Tue Mar 26 10:17
 ```
+
+### 禁止用户ssh登录
+编辑`/etc/ssh/sshd_config`文件，在最后加上`DenyUsers`配置（如已存在，复用即可）    
+```
+# deny user ssh login
+DenyUsers user1 user2 user3
+```
+
+重启ssh服务
+```
+sudo systemctl reload ssh
+```
+
+用户不能通过ssh登录了，但是可以通过已登录的账号`su - user1`去切换到user1
+
+### 禁止密码登录，仅支持证书
+编辑`/etc/ssh/sshd_config`文件，
+
+1. 如果是禁止个别用户/组 
+在最后加上`Match`段，在里面加上  
+```
+# disable ssh login by password for some user
+Match User user1
+    PasswordAuthentication no
+    ChallengeResponseAuthentication no
+```
+
+```
+# disable ssh login by password for some group
+Match Group group1
+    PasswordAuthentication no
+    ChallengeResponseAuthentication no
+```
+
+如果禁止所有用户密码登录，将以下参数都改为no  
+```
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+```
+
+重启ssh服务  
+```
+sudo systemctl reload ssh
+```
+
+无证书登录时会报错  
+```
+shiming@pro ➜  ~ ssh shiming@ubuntu
+shiming@ubuntu: Permission denied (publickey).
+```
+
 ## 软件安装
 ### 二进制包
 ```
@@ -964,7 +1015,20 @@ XX
 | PWD     | The present working directory.    |
 | USER     | The username of the user.    |
 
+### PATH
+`PATH`环境变量决定了系统寻找执行程序时的路径，默认的环境变量如下  
+``` bash
+john@ubuntu:~$ echo $PATH
+/home/john/bin:/home/john/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+```
 
+[/usr/bin和/usr/local/bin的区别](https://www.jianshu.com/p/ea6c4758dba4)：
+首先注意usr 指 Unix System Resource，而不是User  
+然后通常：  
+/usr/bin下面的都是系统预装的可执行程序，会随着系统升级而改变。  
+/usr/local/bin目录是给用户放置自己的可执行程序的地方，推荐放在这里，不会被系统升级而覆盖同名文件。
+
+`~/.local`目录是使用systemd linux发行版都会有的一个目录
 
 ### 参数说明
 ```
@@ -1137,6 +1201,9 @@ set clipboard=unnamed
 !sudo – call shell sudo command
 tee – the output of write (:w) command is redirected using tee
 % – current file name
+
+### vscode vim插件设置
+https://medium.com/@realjohnnylau/vscode-vim-easymotion-%E9%85%8D%E7%BD%AE-6b64bba642cf
 
 ### 常用命令列表
 
@@ -1788,10 +1855,27 @@ pbpaste > /tmp/bb.txt #本地剪贴板到本地文件
 ### 升级vim
 https://stackoverflow.com/questions/39861793/how-update-vim-to-8-0-version-in-osx
 
-### 安装vim-go
+### spacevim字体问题
+spacevim使用的是nerd字体，系统一般都没有装，会导致图标乱码，虽然不影响使用，但是看到乱码很烦人  
+安装字体的步骤（mac好装，有brew命令，以下是linux的安装步骤）：  
+1. 去nerd官网找到对应的系统 https://nerdfonts.com/，下载字体压缩文件，比如ubuntu  
+https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/Ubuntu.zip
+2. 在linux中解压字体包，得到.ttf的字体文件  
+3. 将字体文件复制到`/usr/share/founts`目录或者`/usr/local/share/fonts`目录，如果目录不存在就新建
 
+### man: can't set the locale; make sure $LC_* and $LANG are correct
+`man`命令运行后一直出这个提示，字符集问题，先运行：  
+```
+sudo locale-gen "en_US.UTF-8"
+sudo dpkg-reconfigure locales
+```
 
+然后在`/etc/default/locale`加入以下行  
+```
+LC_ALL="en_US.UTF-8"
+```
 
+[参考](https://stackoverflow.com/questions/45995530/manpath-cant-set-the-locale-make-sure-lc-and-lang-are-correct/46946414)
 
 ## reference
 
