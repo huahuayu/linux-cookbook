@@ -573,7 +573,7 @@ Match Group group1
     ChallengeResponseAuthentication no
 ```
 
-如果禁止所有用户密码登录，将以下参数都改为no  
+2. 如果禁止所有用户密码登录，将以下参数都改为no  
 ```
 PasswordAuthentication no
 ChallengeResponseAuthentication no
