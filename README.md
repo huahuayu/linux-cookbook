@@ -797,41 +797,31 @@ $ cat /etc/services
 -n – shows port number
 -t – enables listing of tcp ports
 -u – enables listing of udp ports
+-p – display PID/Program name for sockets
+
+**`$ netstat -lntup`列出所有tcp/udp、端口、pid、程序名，比较实用**
+
 ``` bash
-$ netstat -lntu
+$ sudo netstat -lntup
 Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
-tcp        0      0 0.0.0.0:18333           0.0.0.0:*               LISTEN
-tcp        0      0 127.0.0.1:8545          0.0.0.0:*               LISTEN
-tcp        0      0 127.0.0.1:8546          0.0.0.0:*               LISTEN
-tcp6       0      0 :::18333                :::*                    LISTEN
-tcp6       0      0 :::30303                :::*                    LISTEN
-udp        0      0 0.0.0.0:68              0.0.0.0:*
-udp        0      0 172.31.42.181:123       0.0.0.0:*
-udp        0      0 127.0.0.1:123           0.0.0.0:*
-udp        0      0 0.0.0.0:123             0.0.0.0:*
-udp6       0      0 :::30303                :::*
-udp6       0      0 :::123                  :::*
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:8332            0.0.0.0:*               LISTEN      30260/bitcoind
+tcp        0      0 0.0.0.0:8333            0.0.0.0:*               LISTEN      30260/bitcoind
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      26137/sshd
+tcp        0      0 0.0.0.0:18332           0.0.0.0:*               LISTEN      29985/bitcoind
+tcp        0      0 0.0.0.0:18333           0.0.0.0:*               LISTEN      29985/bitcoind
+tcp6       0      0 :::8333                 :::*                    LISTEN      30260/bitcoind
+tcp6       0      0 :::8540                 :::*                    LISTEN      17316/geth
+tcp6       0      0 :::30300                :::*                    LISTEN      17316/geth
+tcp6       0      0 :::18333                :::*                    LISTEN      29985/bitcoind
+tcp6       0      0 :::30303                :::*                    LISTEN      17228/geth
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           727/dhclient
+udp        0      0 127.0.0.1:323           0.0.0.0:*                           987/chronyd
+udp6       0      0 :::30300                :::*                                17316/geth
+udp6       0      0 :::30303                :::*                                17228/geth
+udp6       0      0 ::1:323                 :::*                                987/chronyd
 ```
 
-或使用 ss -lntu
-``` bash
-$ ss -lntu
-Netid State      Recv-Q Send-Q              Local Address:Port                             Peer Address:Port
-udp   UNCONN     0      0                               *:68                                          *:*
-udp   UNCONN     0      0                   172.31.42.181:123                                         *:*
-udp   UNCONN     0      0                       127.0.0.1:123                                         *:*
-udp   UNCONN     0      0                               *:123                                         *:*
-udp   UNCONN     0      0                              :::30303                                      :::*
-udp   UNCONN     0      0                              :::123                                        :::*
-tcp   LISTEN     0      128                             *:22                                          *:*
-tcp   LISTEN     0      128                             *:18333                                       *:*
-tcp   LISTEN     0      128                     127.0.0.1:8545                                        *:*
-tcp   LISTEN     0      128                     127.0.0.1:8546                                        *:*
-tcp   LISTEN     0      128                            :::18333                                      :::*
-tcp   LISTEN     0      128                            :::30303                                      :::*
-```
 
 重启网络 - ubuntu
 ``` bash
