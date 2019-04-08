@@ -188,6 +188,8 @@ hostname: you must be root to change the host name        #要root权限才能�
 redhat
                                                           #重启主机名不变
 ```
+
+
 ## 文件类型 -  file
 Linux不以文件名后缀来识别文件类型，通过file命令可以查看文件类型，一般文件类型分为3类
 
@@ -786,6 +788,7 @@ journalctl -u servicename
 | 1024~49151     | the Registered Ports, also known as User Ports.     | 
 | 49152~65535     | the Dynamic Ports, also referred to as the Private Ports.     | 
 
+1024前的端口绑定需要root权限才可以  
 
 查看服务和端口绑定信息：
 ``` bash
@@ -799,28 +802,44 @@ $ cat /etc/services
 -u – enables listing of udp ports
 -p – display PID/Program name for sockets
 
-**`$ netstat -lntup`列出所有tcp/udp、端口、pid、程序名，比较实用**
+`$ netstat -lntup`列出所有tcp/udp、端口、pid、程序名，比较实用
 
 ``` bash
-$ sudo netstat -lntup
+$ netstat -lntu
 Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:8332            0.0.0.0:*               LISTEN      30260/bitcoind
-tcp        0      0 0.0.0.0:8333            0.0.0.0:*               LISTEN      30260/bitcoind
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      26137/sshd
-tcp        0      0 0.0.0.0:18332           0.0.0.0:*               LISTEN      29985/bitcoind
-tcp        0      0 0.0.0.0:18333           0.0.0.0:*               LISTEN      29985/bitcoind
-tcp6       0      0 :::8333                 :::*                    LISTEN      30260/bitcoind
-tcp6       0      0 :::8540                 :::*                    LISTEN      17316/geth
-tcp6       0      0 :::30300                :::*                    LISTEN      17316/geth
-tcp6       0      0 :::18333                :::*                    LISTEN      29985/bitcoind
-tcp6       0      0 :::30303                :::*                    LISTEN      17228/geth
-udp        0      0 0.0.0.0:68              0.0.0.0:*                           727/dhclient
-udp        0      0 127.0.0.1:323           0.0.0.0:*                           987/chronyd
-udp6       0      0 :::30300                :::*                                17316/geth
-udp6       0      0 :::30303                :::*                                17228/geth
-udp6       0      0 ::1:323                 :::*                                987/chronyd
+Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:18333           0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.1:8545          0.0.0.0:*               LISTEN
+tcp        0      0 127.0.0.1:8546          0.0.0.0:*               LISTEN
+tcp6       0      0 :::18333                :::*                    LISTEN
+tcp6       0      0 :::30303                :::*                    LISTEN
+udp        0      0 0.0.0.0:68              0.0.0.0:*
+udp        0      0 172.31.42.181:123       0.0.0.0:*
+udp        0      0 127.0.0.1:123           0.0.0.0:*
+udp        0      0 0.0.0.0:123             0.0.0.0:*
+udp6       0      0 :::30303                :::*
+udp6       0      0 :::123                  :::*
 ```
+
+或使用 ss -lntu
+``` bash
+$ ss -lntu
+Netid State      Recv-Q Send-Q              Local Address:Port                             Peer Address:Port
+udp   UNCONN     0      0                               *:68                                          *:*
+udp   UNCONN     0      0                   172.31.42.181:123                                         *:*
+udp   UNCONN     0      0                       127.0.0.1:123                                         *:*
+udp   UNCONN     0      0                               *:123                                         *:*
+udp   UNCONN     0      0                              :::30303                                      :::*
+udp   UNCONN     0      0                              :::123                                        :::*
+tcp   LISTEN     0      128                             *:22                                          *:*
+tcp   LISTEN     0      128                             *:18333                                       *:*
+tcp   LISTEN     0      128                     127.0.0.1:8545                                        *:*
+tcp   LISTEN     0      128                     127.0.0.1:8546                                        *:*
+tcp   LISTEN     0      128                            :::18333                                      :::*
+tcp   LISTEN     0      128                            :::30303                                      :::*
+```
+
 
 
 重启网络 - ubuntu
@@ -838,6 +857,15 @@ netstat -ntpl (TCP类型的端口)
 例如
 4.telnet ip  端口号   方式测试远程主机端口是否打开
 参考：https://blog.csdn.net/m0_37975886/article/details/78405808?utm_source=copy 
+
+### 阿里云安全组策略
+如果阿里云安全组里没有开放端口，即便服务在本机端口绑定了，外网也无法访问  
+```
+shiming@pro ➜  telnet 120.79.226.111 9009
+Trying 120.79.226.111...
+telnet: connect to address 120.79.226.111: Operation timed out
+telnet: Unable to connect to remote host
+```
 
 ### 防火墙
 
@@ -1220,6 +1248,10 @@ https://medium.com/@realjohnnylau/vscode-vim-easymotion-%E9%85%8D%E7%BD%AE-6b64b
 | 删除到本单词结尾（不包括紧跟的空格）    | de     |     |
 | 删除到两个单词结尾（不包括紧跟的空格）    | d2e     | 以此类推    |
 | 删除到本行末尾    | d$     |     |
+| 删除到指定字符（包含字符）    | dfX     | 删除到X，包含X    |
+| 删除到指定字符（不包含字符）    | dtX     | 删除到X，不包含X    |
+| 反向删除到指定字符（包含字符）    | dFX     | 删除到X，包含X    |
+| 反向删除到指定字符（不包含字符）    | dTX     | 删除到X，不包含X    |
 | 删除到单词结尾并进入插入模式    | ce     | 方便修改该单词,c for change    |
 | 删除到本行末尾并进入插入模式    | c$     | 方便修改单行    |
 | 撤销    | u     |     |
