@@ -1254,6 +1254,10 @@ tee – the output of write (:w) command is redirected using tee
 ### vscode vim插件设置
 https://medium.com/@realjohnnylau/vscode-vim-easymotion-%E9%85%8D%E7%BD%AE-6b64bba642cf
 
+### vim normal模式和插入模式指针形状
+normal模式和插入模式指针形状如果没有区别（normal模式方块，插入模式一根竖线）可以在.vimrc文件中进行设置  
+参考 https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes  
+
 ### 常用命令列表
 
 | 操作 | 命令 | 备注 |
