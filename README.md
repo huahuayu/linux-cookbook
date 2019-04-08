@@ -998,6 +998,37 @@ traceroute to 47.75.70.201 (47.75.70.201), 64 hops max, 52 byte packets
 查看所有环境变量使用printenv命令
 `➜  ~ printenv`
 
+## alias
+别名可以定义在.zshrc或.bashrc中方便一些操作  
+```
+# add python3.7 to path
+export PATH=/usr/local/Cellar/python/3.7.1/bin:$PATH
+export PATH=/usr/local/Cellar/python/3.7/bin:$PATH
+alias pip3='python3 -m pip'
+alias python2="/usr/bin/python" 
+
+# alias cleos in docker
+alias cleos='docker exec -it eosio /opt/eosio/bin/cleos --url http://127.0.0.1:7777 --wallet-url http://127.0.0.1:5555'
+
+# alias md_to_json
+alias mtj='md_to_json'
+
+# alias for clear 
+alias cl='clear'
+
+# alias for tldr
+alias sman='tldr'
+
+# alias for go to defang dir
+alias defang='cd /Users/shiming/Nutstore/21-defang'	
+
+# alias for go to jianguoyun dir
+alias jianguoyun='cd /Users/shiming/Nutstore'	
+
+# alias for go to myrepo dir
+alias myrepo='cd /Users/shiming/Nutstore/00-myrepo'	
+```
+
 ## export
 bash内建命令，使得子进程可以复用父进程的环境变量。通过命令行敲的export命令，不管是导入还是删除都是临时的。如果需要永久保持有效需要写在~/.bashrc等配置文件中。
 
