@@ -1,14 +1,14 @@
 # Linux cookbook
 linux cookbook, linux烹饪书，linux命令总结，linux cli by example  
 ## 命令行移动
-### Basic moves
+### 移动
 Move back one character. Ctrl + b
 Move forward one character. Ctrl + f
 Delete current character. Ctrl + d
 Delete previous character. Backspace
 Undo. Ctrl + -
 
-### Moving faster
+### 快速移动
 Move to the start of line. Ctrl + a
 Move to the end of line. Ctrl + e
 Move forward a word. Meta + f (a word contains alphabets and digits, no symbols)
@@ -17,7 +17,7 @@ Clear the screen. Ctrl + l
 
 > What is Meta? Meta is your Alt key, normally. For Mac OSX user, you need to enable it yourself. Open Terminal > Preferences > Settings > Keyboard, and enable Use option as meta key. Meta key, by convention, is used for operations on word.
 
-### Cut and paste (‘Kill and yank’ for old schoolers)
+### 剪切和粘贴 (‘Kill and yank’ for old schoolers)
 Cut from cursor to the end of line. Ctrl + k
 Cut from cursor to the end of word. Meta + d
 Cut from cursor to the start of word. Meta + Backspace
@@ -26,7 +26,7 @@ Paste the last cut text. Ctrl + y
 Loop through and paste previously cut text. Meta + y (use it after Ctrl + y)
 Loop through and paste the last argument of previous commands. Meta + .
 
-### Search the command history
+### 搜索命令行历史
 Search as you type. Ctrl + r and type the search term; Repeat Ctrl + r to loop through results.
 Search the last remembered search term. Ctrl + r twice.
 End the search at current history entry. Ctrl + j
@@ -144,6 +144,12 @@ Linux MNG-BC 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16 21:00:45 UTC 2019 x86_
 [shiming@red-hat-enterprise-linux ~]$ date +%s    #打印unix时间戳，精确到秒
 1532519829
 ```
+## 本地化设置
+`locale`命令  
+locale - description of multilanguage support  
+A locale is a set of language and cultural rules.
+
+http://man7.org/linux/man-pages/man7/locale.7.html  
 
 ## 系统语言 - LANG
 ### 修改系统语言
@@ -331,10 +337,34 @@ http://www.pathname.com/fhs/
 ```
 
 ### 新建目录 - mkdir
+常用参数
+![](https://raw.githubusercontent.com/huahuayu/img/master/20190423222908.png)
+
 ```
 [shiming@redhat ~]$ mkdir tmp
 [shiming@redhat ~]$ ls
 Desktop  Documents  Downloads  Music  Pictures  Public  Templates  tmp  Videos
+```
+
+递归创建目录
+``` bash
+mkdir -p /dir/not/exist  # 如果/dir或者/dir/not不存在则都会被创建
+```
+
+创建带权限的目录  
+``` bash
+mkdir -m 744 /dir   # /dir的权限会被新建为744
+```
+
+一次性创建多个目录
+``` bash
+shiming@pro ➜  /tmp mkdir -p dir1/{dir2/,dir3/{dir3.1,dir3.2}}
+shiming@pro ➜  /tmp tree dir1
+dir1
+├── dir2
+└── dir3
+    ├── dir3.1
+    └── dir3.2
 ```
 
 ### 文件列表 - ls
@@ -375,6 +405,18 @@ total 0
 -rw-rw-r--. 1 shiming shiming 0 Jul 27 23:27 film1.avi
 -rw-rw-r--. 1 shiming shiming 0 Jul 27 23:27 film2.avi
 ```
+
+ls -h列出文件大小为人眼可读的(B,K,M,G)
+```
+shiming@pro ➜  asset-platform git:(master) ls -alh
+total 24
+drwxr-xr-x@  6 shiming  staff   192B Apr 18 10:50 .
+drwxr-xr-x@ 22 shiming  staff   704B Apr 16 20:13 ..
+-rw-r--r--@  1 shiming  staff   6.0K Apr 22 20:10 .DS_Store
+drwxr-xr-x@ 13 shiming  staff   416B Apr 22 20:12 .git
+-rw-r--r--   1 shiming  staff    36B Apr 16 20:13 README.md
+drwxr-xr-x@  7 shiming  staff   224B Apr 22 20:10 docs
+```
 ### 切换目录
 ```
 [shiming@redhat tmp]$ cd /    
@@ -409,6 +451,17 @@ lost+found  shiming
 -rw-rw-r--. 1 shiming shiming    0 Jul 28 09:41 file4
 -rw-rw-r--. 1 shiming shiming    0 Jul 28 09:41 file5
 ```
+
+### 删除文件 - rm
+常用选项  
+![](https://raw.githubusercontent.com/huahuayu/img/master/20190423223101.png)
+
+
+### 移动文件 - mv
+常用选项  
+![](https://raw.githubusercontent.com/huahuayu/img/master/20190423223235.png)
+
+
 ### 文件管理
 |文件管理命令|	单一来源	|多来源
 |-----|-----|-----|
@@ -846,6 +899,13 @@ tcp   LISTEN     0      128                            :::30303                 
 ``` bash
 sudo service networking restart
 ```
+
+### 网络链路测试
+ping不通或丢包严重时需要进行网络链路测试，定位问题
+https://help.aliyun.com/knowledge_detail/40573.html  
+
+推荐使用`mtr`命令
+
 ### 查看端口是否打开
 1.你可以使用 lsof 命令来查看某一端口是否开放。查看端口可以这样来使用，我就以80端口为例：
 lsof -i:80
@@ -1559,6 +1619,141 @@ $ grep tom /etc/passwd
 用户可以是零个或多个补充组的成员。
 属于本地组补充成员的用户列在/etc/group中组条目的最后一个字段中。对于本地组，成员身份由/etc/group中组条目的最后一个字段中的逗号分隔用户列表确定。
 
+## 包管理
+不同的发行版有不同的包管理程序
+| Operating System | Format      | Tool(s)                       |
+|------------------|-------------|-------------------------------|
+| Debian           | .deb        | apt, apt-cache, apt-get, dpkg |
+| Ubuntu           | .deb        | apt, apt-cache, apt-get, dpkg |
+| CentOS           | .rpm        | yum                           |
+| Fedora           | .rpm        | dnf                           |
+| FreeBSD          | Ports, .txz | make, pkg                     |
+
+### 更新包列表
+| System           | Command                    |
+|------------------|----------------------------|
+| Debian / Ubuntu  | sudo apt-get update        |
+|                  | sudo apt update            |
+| CentOS           | yum check-update           |
+| Fedora           | dnf check-update           |
+| FreeBSD Packages | sudo pkg update            |
+| FreeBSD Ports    | sudo portsnap fetch update |
+
+### 更新已安装的包  
+| System           | Command                                                                        | Notes                                                                                 |
+|------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| Debian / Ubuntu  | sudo apt-get upgrade                                                           | Only upgrades installed packages, where possible.                                     |
+|                  | sudo apt-get dist-upgrade                                                      | May add or remove packages to satisfy new dependencies.                               |
+|                  | sudo apt upgrade                                                               | Like apt-get upgrade.                                                                 |
+|                  | sudo apt full-upgrade                                                          | Like apt-get dist-upgrade.                                                            |
+| CentOS           | sudo yum update                                                                |                                                                                       |
+| Fedora           | sudo dnf upgrade                                                               |                                                                                       |
+| FreeBSD Packages | sudo pkg upgrade                                                               |                                                                                       |
+| FreeBSD Ports    | less /usr/ports/UPDATING                                                       | Uses less to view update notes for ports (use arrow keys to scroll, press q to quit). |
+|                  | cd /usr/ports/ports-mgmt/portmaster && sudo make install && sudo portmaster -a | Installs portmaster and uses it to update installed ports.                            |
+### 搜索包  
+| System           | Command                                        | Notes                                              |
+|------------------|------------------------------------------------|----------------------------------------------------|
+| Debian / Ubuntu  | apt-cache search search_string                 |                                                    |
+|                  | apt search search_string                       |                                                    |
+| CentOS           | yum search search_string                       |                                                    |
+|                  | yum search all search_string                   | Searches all fields, including description.        |
+| Fedora           | dnf search search_string                       |                                                    |
+|                  | dnf search all search_string                   | Searches all fields, including description.        |
+| FreeBSD Packages | pkg search search_string                       | Searches by name.                                  |
+|                  | pkg search -f search_string                    | Searches by name, returning full descriptions.     |
+|                  | pkg search -D search_string                    | Searches description.                              |
+| FreeBSD Ports    | cd /usr/ports && make search name=package      | Searches by name.                                  |
+|                  | cd /usr/ports && make search key=search_string | Searches comments, descriptions, and dependencies. |
+
+### 查看包信息
+| System           | Command                          | Notes                                            |
+|------------------|----------------------------------|--------------------------------------------------|
+| Debian / Ubuntu  | apt-cache show package           | Shows locally-cached info about a package.       |
+|                  | apt show package                 |                                                  |
+|                  | dpkg -s package                  | Shows the current installed status of a package. |
+| CentOS           | yum info package                 |                                                  |
+|                  | yum deplist package              | Lists dependencies for a package.                |
+| Fedora           | dnf info package                 |                                                  |
+|                  | dnf repoquery --requires package | Lists dependencies for a package.                |
+| FreeBSD Packages | pkg info package                 | Shows info for an installed package.             |
+| FreeBSD Ports | cd /usr/ports/category/port && cat pkg-descr   |              |
+
+### 从库中安装包  
+| System           | Command                                          | Notes                                                     |
+|------------------|--------------------------------------------------|-----------------------------------------------------------|
+| Debian / Ubuntu  | sudo apt-get install package                     |                                                           |
+|                  | sudo apt-get install package1 package2 ...       | Installs all listed packages.                             |
+|                  | sudo apt-get install -y package                  | Assumes "yes" where apt would usually prompt to continue. |
+|                  | sudo apt install package                         | Displays a colored progress bar.                          |
+| CentOS           | sudo yum install package                         |                                                           |
+|                  | sudo yum install package1 package2 ...           | Installs all listed packages.                             |
+|                  | sudo yum install -y package                      | Assumes "yes" where yum would usually prompt to continue. |
+| Fedora           | sudo dnf install package                         |                                                           |
+|                  | sudo dnf install package1 package2 ...           | Installs all listed packages.                             |
+|                  | sudo dnf install -y package                      | Assumes "yes" where dnf would usually prompt to continue. |
+| FreeBSD Packages | sudo pkg install package                         |                                                           |
+|                  | sudo pkg install package1 package2 ...           | Installs all listed packages.                             |
+| FreeBSD Ports    | cd /usr/ports/category/port && sudo make install | Builds and installs a port from source.                   |
+
+### 从本地安装包  
+| System           | Command                                                 | Notes                                                                                 |
+|------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------|
+| Debian / Ubuntu  | sudo dpkg -i package.deb                                |                                                                                       |
+|                  | sudo apt-get install -y gdebi && sudo gdebi package.deb | Installs and uses gdebi to install package.deb and retrieve any missing dependencies. |
+| CentOS           | sudo yum install package.rpm                            |                                                                                       |
+| Fedora           | sudo dnf install package.rpm                            |                                                                                       |
+| FreeBSD Packages | sudo pkg add package.txz                                |                                                                                       |
+|                  | sudo pkg add -f package.txz                             | Installs package even if already installed.                                           |
+
+### 删除一个或多个包  
+| System           | Command                                      | Notes                          |
+|------------------|----------------------------------------------|--------------------------------|
+| Debian / Ubuntu  | sudo apt-get remove package                  |                                |
+|                  | sudo apt remove package                      |                                |
+|                  | sudo apt-get autoremove                      | Removes unneeded packages.     |
+| CentOS           | sudo yum remove package                      |                                |
+| Fedora           | sudo dnf erase package                       |                                |
+| FreeBSD Packages | sudo pkg delete package                      |                                |
+|                  | sudo pkg autoremove                          | Removes unneeded packages.     |
+| FreeBSD Ports    | sudo pkg delete package                      |                                |
+|                  | cd /usr/ports/path_to_port && make deinstall | De-installs an installed port. |
+
+### 查看帮助  
+| System           | Command       | Notes                                                                          |
+|------------------|---------------|--------------------------------------------------------------------------------|
+| Debian / Ubuntu  | man apt-get   | Updating the local package database and working with packages.                 |
+|                  | man apt-cache | Querying the local package database.                                           |
+|                  | man dpkg      | Working with individual package files and querying installed packages.         |
+|                  | man apt       | Working with a more concise, user-friendly interface to most basic operations. |
+| CentOS           | man yum       |                                                                                |
+| Fedora           | man dnf       |                                                                                |
+| FreeBSD Packages | man pkg       | Working with pre-compiled binary packages.                                     |
+| FreeBSD Ports    | man ports     | Working with the Ports Collection.                                             |
+
+
+
+### apt vs apt-get  
+建议使用apt替代apt-get，apt是apt-get与apt-cache的常用命令集成  
+
+| apt      | apt-get | function                              |
+|------------------|-------------------------|------------------------------------------------------|
+| apt install      | apt-get install         | Installs a package                                   |
+| apt remove       | apt-get remove          | Removes a package                                    |
+| apt purge        | apt-get purge           | Removes package with configuration                   |
+| apt update       | apt-get update          | Refreshes repository index                           |
+| apt upgrade      | apt-get upgrade         | Upgrades all upgradable packages                     |
+| apt autoremove   | apt-get autoremove      | Removes unwanted packages                            |
+| apt full-upgrade | apt-get dist-upgrade    | Upgrades packages with auto-handling of dependencies |
+| apt search       | apt-cache search        | Searches for the program                             |
+| apt show         | apt-cache show          | Shows package details                                |
+
+### 更多资源  
+[This guide](https://www.digitalocean.com/community/tutorials/ubuntu-and-debian-package-management-essentials) covers Ubuntu and Debian package management in detail.
+There's an [official CentOS guide](https://www.centos.org/docs/5/html/yum/) to managing software with yum.
+There's a [Fedora wiki page about dnf](https://fedoraproject.org/wiki/Dnf), and an [official manual for dnf](https://dnf.readthedocs.org/en/latest/index.html) itself.
+[This guide](https://www.digitalocean.com/community/tutorials/how-to-manage-packages-on-freebsd-10-1-with-pkg) covers FreeBSD package management using pkg.
+The [FreeBSD Handbook](https://www.freebsd.org/doc/handbook/) contains a [section on using the Ports Collection](https://www.freebsd.org/doc/handbook/ports-using.html).
 
 ## 实用技巧
 ### ubuntu安装mysql
@@ -1921,6 +2116,8 @@ https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/Ubuntu.zip
 3. 将字体文件复制到`/usr/share/founts`目录或者`/usr/local/share/fonts`目录，如果目录不存在就新建
 
 ### man: can't set the locale; make sure $LC_* and $LANG are correct
+
+问题原因： [Mac OS X ssh登陆Linux是终端提示cannot change locale](http://blog.huatai.me/2015/12/03/Mac-OS-X-ssh-to-Linux-prompt-setlocale-LC-CTYPE-cannot-change-locale-UTF-8/)  
 `man`命令运行后一直出这个提示，字符集问题，先运行：  
 ```
 sudo locale-gen "en_US.UTF-8"
