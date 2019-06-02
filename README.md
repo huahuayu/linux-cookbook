@@ -462,7 +462,7 @@ lost+found  shiming
 ![](https://raw.githubusercontent.com/huahuayu/img/master/20190423223235.png)
 
 
-### 文件管理
+### 文件管理命令
 |文件管理命令|	单一来源	|多来源
 |-----|-----|-----|
 |复制文件|	cp file1 file2|cp file1 file2 file3 dir④|
@@ -644,6 +644,9 @@ sudo systemctl reload ssh
 shiming@pro ➜  ~ ssh shiming@ubuntu
 shiming@ubuntu: Permission denied (publickey).
 ```
+## 服务管理
+systemd vs init.d  
+![](https://raw.githubusercontent.com/huahuayu/img/master/20190602234328.png)
 
 ## 软件安装
 ### 二进制包
@@ -1697,6 +1700,10 @@ $ grep tom /etc/passwd
 |                  | sudo pkg install package1 package2 ...           | Installs all listed packages.                             |
 | FreeBSD Ports    | cd /usr/ports/category/port && sudo make install | Builds and installs a port from source.                   |
 
+安装包时自动确认加`-y`选项  
+```
+sudo apt install -y nginx
+```
 ### 从本地安装包  
 | System           | Command                                                 | Notes                                                                                 |
 |------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------|
