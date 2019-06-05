@@ -1765,7 +1765,23 @@ The [FreeBSD Handbook](https://www.freebsd.org/doc/handbook/) contains a [sectio
 
 ## 实用技巧
 ### ubuntu安装mysql
+（1）安装
+MySQL 是一个小型关系型数据库管理系统，其安装分为服务端与客户端
+安装命令如下：  
+```
+$ sudo apt-get install mysql-server mysql-client # 这样安装的会是mysql 5.5左右
+```
+
+然后会看见输入密码的界面，你只需接下来输入管理员密码就行。
+
+（2）修改 MySQL 的配置文件
+```
+$ sudo vim /etc/mysql/my.cnf
+```
+将 bind-address = 127.0.0.1 注释掉，就可以远程连接数据库了
 https://github.com/rackerlabs/rackspace-how-to/edit/master/content/cloud-servers/installing-mysql-server-on-ubuntu.md
+
+
 
 ### 配置mysql
 https://github.com/rackerlabs/rackspace-how-to/edit/master/content/cloud-servers/configuring-mysql-server-on-ubuntu.md
