@@ -1315,6 +1315,19 @@ set clipboard=unnamed
 tee – the output of write (:w) command is redirected using tee
 % – current file name
 
+### 相对行号
+`set relativenumber`可以开启相对行号
+
+以下.vimrc配置可以在normal模式下显示相对行号，insert模式下现在正常行号  
+```
+set nu
+augroup relative_numbser
+    autocmd!
+    autocmd InsertEnter * :set norelativenumber
+    autocmd InsertLeave * :set relativenumber
+augroup END
+```
+
 ### vscode vim插件设置
 https://medium.com/@realjohnnylau/vscode-vim-easymotion-%E9%85%8D%E7%BD%AE-6b64bba642cf
 
@@ -1338,8 +1351,10 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 粘贴（光标后）    | p     | p for paste    |
 | 粘贴（光标前）    | P（大写）     |     |
 | 复制行    | yy     |     |
-| 显示行号    | :set number     |     |
-| 不显示行号    | :set nonumber     |     |
+| 显示行号    | :set number     | 等价于:set nu    |
+| 不显示行号    | :set nonumber     | 等价于:set nu!    |
+| 显示相对行号    | :set relativenumber     | 等价于:set rnu    |
+| 不显示相对行号    | :set norelativenumber     | 等价于:set rnu!    |
 | 显示所有设置项    | :set all     |     |
 | 显示用户设置    | :set     |     |
 | 删除到本单词结尾（包括紧跟着的空格）    | dw     |     |
@@ -1764,6 +1779,37 @@ There's a [Fedora wiki page about dnf](https://fedoraproject.org/wiki/Dnf), and 
 The [FreeBSD Handbook](https://www.freebsd.org/doc/handbook/) contains a [section on using the Ports Collection](https://www.freebsd.org/doc/handbook/ports-using.html).
 
 ## 实用技巧
+### 删除阿里云盾
+执行以下命令  
+```
+wget http://update.aegis.aliyun.com/download/uninstall.sh && chmod +x uninstall.sh && ./uninstall.sh
+```
+
+执行以下命令
+```
+wget http://update.aegis.aliyun.com/download/quartz_uninstall.sh && chmod +x quartz_uninstall.sh && ./quartz_uninstall.sh
+```
+
+删除残留  
+```
+pkill aliyun-service && rm -fr /etc/init.d/agentwatch /usr/sbin/aliyun-service && rm -rf /usr/local/aegis*
+```
+
+屏蔽云盾
+```
+iptables -I INPUT -s 140.205.201.0/28 -j DROP
+iptables -I INPUT -s 140.205.201.16/29 -j DROP
+iptables -I INPUT -s 140.205.201.32/28 -j DROP
+iptables -I INPUT -s 140.205.225.192/29 -j DROP
+iptables -I INPUT -s 140.205.225.200/30 -j DROP
+iptables -I INPUT -s 140.205.225.184/29 -j DROP
+iptables -I INPUT -s 140.205.225.183/32 -j DROP
+iptables -I INPUT -s 140.205.225.206/32 -j DROP
+iptables -I INPUT -s 140.205.225.205/32 -j DROP
+iptables -I INPUT -s 140.205.225.195/32 -j DROP
+iptables -I INPUT -s 140.205.225.204/32 -j DROP
+```
+
 ### ubuntu安装mysql
 （1）安装
 MySQL 是一个小型关系型数据库管理系统，其安装分为服务端与客户端
