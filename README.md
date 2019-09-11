@@ -38,17 +38,72 @@ Vim users! Do you know you can switch to Vi-style editing mode? Here: [vi-style 
 Bash command line editing is actually handled by GNU Readline Library. So just dive into [Readline manual](http://www.gnu.org/software/readline/#Documentation) for everything else.
 
 ## 查看linux版本
-
+方法一  
 ``` zsh
-root@1de774242804:/# cat /etc/issue   #方法一
+root@1de774242804:/# cat /etc/issue
 Debian GNU/Linux 9 \n \l
+```
 
-root@1de774242804:/# cat /etc/issue.net   #方法二
+方法二  
+``` zsh
+root@1de774242804:/# cat /etc/issue.net
 Debian GNU/Linux 9
-root@1de774242804:/# uname -a  #方法三
+```
+
+方法三  
+``` zsh
+root@1de774242804:/# uname -a
 Linux 1de774242804 4.9.125-linuxkit #1 SMP Fri Sep 7 08:20:28 UTC 2018 x86_64 GNU/Linux
-root@1de774242804:/# cat /proc/version  #方法四
+```
+
+方法四
+``` zsh
+root@1de774242804:/# cat /proc/version
 Linux version 4.9.125-linuxkit (root@659b6d51c354) (gcc version 6.4.0 (Alpine 6.4.0) ) #1 SMP Fri Sep 7 08:20:28 UTC 2018
+```
+
+方法五(Mac和Ubuntu/centos测试可行)
+``` zsh
+shiming@pro ➜  ~ echo $OSTYPE
+darwin18.0
+
+root@df ➜  ~ echo $OSTYPE
+linux-gnu
+
+[shiming@centos ~]$ echo $OSTYPE
+linux-gnu
+```
+
+### 针对不同操作系统设置不同zshrc
+``` bash
+case `uname` in
+  Darwin)
+    # commands for OS X go here
+  ;;
+  Linux)
+    # commands for Linux go here
+  ;;
+  FreeBSD)
+    # commands for FreeBSD go here
+  ;;
+esac
+```
+
+或
+
+``` bash
+# for ZSH
+case "$OSTYPE" in
+  darwin*)
+    # ...
+  ;;
+  linux*)
+    # ...
+  ;;
+  dragonfly*|freebsd*|netbsd*|openbsd*)
+    # ...
+  ;;
+esac
 ```
 
 ## 查看硬件信息
@@ -194,7 +249,18 @@ hostname: you must be root to change the host name        #要root权限才能�
 redhat
                                                           #重启主机名不变
 ```
+## 搜索命令
+### whatis
+`whatis`命令会精确搜索whatis数据库，给出命令的简介  
+``` bash
+shiming@pro ➜  ~ whatis cal
+cal(1), ncal(1)          - displays a calendar and the date of Easter
+```
 
+`apropos`是`whatis`的模糊搜索版，会全文模糊搜索whatis数据库  
+``` bash
+shiming@pro ➜  ~ apropos cal
+```
 
 ## 文件类型 -  file
 Linux不以文件名后缀来识别文件类型，通过file命令可以查看文件类型，一般文件类型分为3类
@@ -1362,14 +1428,21 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 删除到本单词结尾（不包括紧跟的空格）    | de     |     |
 | 删除到两个单词结尾（不包括紧跟的空格）    | d2e     | 以此类推    |
 | 删除到本行末尾    | d$     |     |
+| 删除到文件末尾    | dG     |     |
+| 删除两个引号/括号中的内容（不包括引号）    | di" 或 di)     | i for inside    |
+| 删除两个引号/括号中的内容（包括引号）    | da" 或 da)     |    |
+| 删除到文件开头（包括光标所在行）    | dgg/d1G     |     |
 | 删除到指定字符（包含字符）    | dfX     | 删除到X，包含X    |
 | 删除到指定字符（不包含字符）    | dtX     | 删除到X，不包含X    |
 | 反向删除到指定字符（包含字符）    | dFX     | 删除到X，包含X    |
 | 反向删除到指定字符（不包含字符）    | dTX     | 删除到X，不包含X    |
+| 删除一行并进入插入模式    | cc     |     |
 | 删除到单词结尾并进入插入模式    | ce     | 方便修改该单词,c for change    |
-| 删除到本行末尾并进入插入模式    | c$     | 方便修改单行    |
+| 删除到本行末尾并进入插入模式    | c$/C(大写)     |     |
+| 整行向右缩进    | >>     |     |
+| 整行向左缩进    | <<     |     |
 | 撤销    | u     |     |
-| 撤销之撤销    | ctrl + r     | r for redo I think    |
+| 撤销之撤销    | ctrl + r     | r for redo   |
 | 保存    | :w     |     |
 | 另存为    | :w + filename   | 将目前编辑的文件另存为filename    |
 | 保存并退出    | :wq or :ZZ     |     |
@@ -1388,6 +1461,7 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 向上搜索    | ？ + <key word>     |     |
 | 查找下一个    | n     |     |
 | 查找上一个    | N     |     |
+| 搜索高亮    | :set hls    |     |
 | 跳到光标上一个所在的位置    | ctrl + o     | o for older    |
 | 跳到光标下一个所在的位置    | ctrl + i     |     |
 | 找到对称的另一半括号(大中小括号都行)    | 将光标置于括号上然后按%    |     |
