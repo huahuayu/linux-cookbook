@@ -223,12 +223,16 @@ mac为例，在本机中 vi /etc/ssh/ssh_config,如果希望在ssh连接中传�
 ```
 
 ## 主机名 - hostnamectl
-redhat中有三种主机名类型：--pretty, --static, and --transient， [参考1](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec_configuring_host_names_using_hostnamectl) and [参考2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_host_names)
+redhat中有三种主机名类型：--pretty, --static, and --transient  
 | Hostname Type | Description |
 | -------- | -------- |
 | Static     | Assigned by the system admin     |
 | Transient/Dynamic     | Assigned by DHCP or mDNS server at runtime     |
 | Pretty     | Assigned by the system admin. Its can be used as Description like “Oracle DB server”     |
+
+[参考1](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec_configuring_host_names_using_hostnamectl)  
+
+[参考2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_host_names)
 
 ### 查看和修改主机名
 ```
