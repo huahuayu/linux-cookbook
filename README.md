@@ -74,37 +74,7 @@ linux-gnu
 linux-gnu
 ```
 
-### 针对不同操作系统设置不同zshrc
-``` bash
-case `uname` in
-  Darwin)
-    # commands for OS X go here
-  ;;
-  Linux)
-    # commands for Linux go here
-  ;;
-  FreeBSD)
-    # commands for FreeBSD go here
-  ;;
-esac
-```
 
-或
-
-``` bash
-# for ZSH
-case "$OSTYPE" in
-  darwin*)
-    # ...
-  ;;
-  linux*)
-    # ...
-  ;;
-  dragonfly*|freebsd*|netbsd*|openbsd*)
-    # ...
-  ;;
-esac
-```
 
 ## 查看硬件信息
 `lshw`命令可以查看硬件信息  
@@ -223,16 +193,12 @@ mac为例，在本机中 vi /etc/ssh/ssh_config,如果希望在ssh连接中传�
 ```
 
 ## 主机名 - hostnamectl
-redhat中有三种主机名类型：--pretty, --static, and --transient  
+redhat中有三种主机名类型：--pretty, --static, and --transient， [参考1](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec_configuring_host_names_using_hostnamectl) and [参考2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_host_names)
 | Hostname Type | Description |
 | -------- | -------- |
 | Static     | Assigned by the system admin     |
 | Transient/Dynamic     | Assigned by DHCP or mDNS server at runtime     |
 | Pretty     | Assigned by the system admin. Its can be used as Description like “Oracle DB server”     |
-
-[参考1](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec_configuring_host_names_using_hostnamectl)  
-
-[参考2](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_host_names)
 
 ### 查看和修改主机名
 ```
@@ -1344,9 +1310,6 @@ PID    COMMAND      %CPU TIME     #TH    #WQ  #PORTS MEM    PURG   CMPRS  PGRP  
 https://www.thegeekstuff.com/2010/05/unix-background-job/
 
 
-
-### 查看
-
 ## vim
 ### 系统自带教程
 ```
@@ -1856,6 +1819,149 @@ There's a [Fedora wiki page about dnf](https://fedoraproject.org/wiki/Dnf), and 
 [This guide](https://www.digitalocean.com/community/tutorials/how-to-manage-packages-on-freebsd-10-1-with-pkg) covers FreeBSD package management using pkg.
 The [FreeBSD Handbook](https://www.freebsd.org/doc/handbook/) contains a [section on using the Ports Collection](https://www.freebsd.org/doc/handbook/ports-using.html).
 
+## 常用bash命令
+### find
+递归搜索当前目录，名字为tecmint.txt
+``` bash
+# find . -name tecmint.txt
+
+./tecmint.txt
+```
+
+递归搜/home目录
+``` bash
+# find /home -name tecmint.txt
+
+/home/tecmint.txt
+```
+
+不区分小写搜索
+``` bash
+# find /home -iname tecmint.txt
+
+./tecmint.txt
+./Tecmint.txt
+```
+
+搜索目录名
+``` bash
+# find / -type d -name Tecmint
+
+/Tecmint
+```
+
+find `-type`参数
+```
+     -type t
+             True if the file is of the specified type.  Possible file types are as follows:
+
+             b       block special
+             c       character special
+             d       directory
+             f       regular file
+             l       symbolic link
+             p       FIFO
+             s       socket
+```
+
+查找java文件
+```
+# find . -name '*.java'
+
+person.java
+main.java
+```
+
+配合xargs使用：递归搜索当前目录，名字为.java结尾的文件，并附加到src.txt中
+``` bash
+# find . -name '*.java' | xargs cat >> src.txt
+```
+
+找出777权限的文件
+```
+# find . -perm 777
+```
+
+找出所有的空文件
+``` bash
+find /tmp -type f -empty
+```
+
+找出所有的空文件夹
+``` bash
+# find /tmp -type d -empty
+```
+
+找出所有的隐藏文件
+``` bash
+# find /tmp -type f -name ".*"
+```
+
+找出某个用户的文件
+``` bash
+# find / -user root -name tecmint.txt
+```
+
+找出某个组的文件
+``` bash
+# find /home -group developer
+```
+
+找出近50天修改的文件
+``` bash
+# find / -mtime 50
+```
+
+找出近50天打开过的文件
+``` bash
+# find / -atime 50
+```
+
+找出50~100天内修改的文件
+``` bash
+# find / -mtime +50 –mtime -100
+```
+
+1小时内有文件属性变化
+``` bash
+# find / -cmin -60
+```
+
+1小时文件内容变化
+``` bash
+# find / -mmin -60
+```
+
+大于50小于100M的文件
+``` bash
+# find / -size +50M -size -100M
+```
+
+找出并删除大于10M的mp3文件
+``` bash
+# find / -type f -name *.mp3 -size +10M -exec rm {} +
+```
+
+find找出路径后配合其他命令使用：
+```
+# 推荐，并行处理，无需借助管道
+find . -exec cmd {} + 
+
+# 推荐，并行处理，速度快
+find . -print0 | xargs -0 cmd 
+
+# 文件名有空格时将不能处理
+find . | xargs cmd 
+
+# 不推荐，命令一行行执行，不是并行，速度最慢
+find . -exec cmd {} \; 
+```
+
+
+**参考**：
+[35个find示例](https://www.tecmint.com/35-practical-examples-of-linux-find-command/) 
+[linux find中的-print0和xargs中-0的奥妙](https://www.cnblogs.com/hnhycnlc888/p/9199738.html)
+
 ## 实用技巧
 ### 删除阿里云盾
 执行以下命令  
@@ -2283,11 +2389,3 @@ LC_ALL="en_US.UTF-8"
 
 ### bash reference
 http://www.gnu.org/software/bash/manual/bashref.html
-
-
-
-
-
-
-
-
