@@ -1,80 +1,41 @@
 # Linux cookbook
 linux cookbook, linux烹饪书，linux命令总结，linux cli by example  
-## 命令行移动
-### 移动
-Move back one character. Ctrl + b
-Move forward one character. Ctrl + f
-Delete current character. Ctrl + d
-Delete previous character. Backspace
-Undo. Ctrl + -
-
-### 快速移动
-Move to the start of line. Ctrl + a
-Move to the end of line. Ctrl + e
-Move forward a word. Meta + f (a word contains alphabets and digits, no symbols)
-Move backward a word. Meta + b
-Clear the screen. Ctrl + l
-
-> What is Meta? Meta is your Alt key, normally. For Mac OSX user, you need to enable it yourself. Open Terminal > Preferences > Settings > Keyboard, and enable Use option as meta key. Meta key, by convention, is used for operations on word.
-
-### 剪切和粘贴 (‘Kill and yank’ for old schoolers)
-Cut from cursor to the end of line. Ctrl + k
-Cut from cursor to the end of word. Meta + d
-Cut from cursor to the start of word. Meta + Backspace
-Cut from cursor to previous whitespace. Ctrl + w
-Paste the last cut text. Ctrl + y
-Loop through and paste previously cut text. Meta + y (use it after Ctrl + y)
-Loop through and paste the last argument of previous commands. Meta + .
-
-### 搜索命令行历史
-Search as you type. Ctrl + r and type the search term; Repeat Ctrl + r to loop through results.
-Search the last remembered search term. Ctrl + r twice.
-End the search at current history entry. Ctrl + j
-Cancel the search and restore original line. Ctrl + g
-
-### Need more?
-A comprehensive [bash editing mode cheatsheet](http://www.catonmat.net/blog/bash-emacs-editing-mode-cheat-sheet/) by Peteris Krumin (catonmat.net).
-Vim users! Do you know you can switch to Vi-style editing mode? Here: [vi-style cheatsheet](http://www.catonmat.net/blog/bash-vi-editing-mode-cheat-sheet/).
-Bash command line editing is actually handled by GNU Readline Library. So just dive into [Readline manual](http://www.gnu.org/software/readline/#Documentation) for everything else.
-
 ## 查看linux版本
 方法一  
 ``` zsh
-root@1de774242804:/# cat /etc/issue
+$ cat /etc/issue
 Debian GNU/Linux 9 \n \l
 ```
 
 方法二  
 ``` zsh
-root@1de774242804:/# cat /etc/issue.net
+$cat /etc/issue.net
 Debian GNU/Linux 9
 ```
 
 方法三  
 ``` zsh
-root@1de774242804:/# uname -a
+$ uname -a
 Linux 1de774242804 4.9.125-linuxkit #1 SMP Fri Sep 7 08:20:28 UTC 2018 x86_64 GNU/Linux
 ```
 
 方法四
 ``` zsh
-root@1de774242804:/# cat /proc/version
+$ cat /proc/version
 Linux version 4.9.125-linuxkit (root@659b6d51c354) (gcc version 6.4.0 (Alpine 6.4.0) ) #1 SMP Fri Sep 7 08:20:28 UTC 2018
 ```
 
 方法五(Mac和Ubuntu/centos测试可行)
 ``` zsh
-shiming@pro ➜  ~ echo $OSTYPE
+$ echo $OSTYPE
 darwin18.0
 
-root@df ➜  ~ echo $OSTYPE
+$ echo $OSTYPE
 linux-gnu
 
-[shiming@centos ~]$ echo $OSTYPE
+$ echo $OSTYPE
 linux-gnu
 ```
-
-
 
 ## 查看硬件信息
 `lshw`命令可以查看硬件信息  
@@ -169,6 +130,7 @@ Linux MNG-BC 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16 21:00:45 UTC 2019 x86_
 [shiming@red-hat-enterprise-linux ~]$ date +%s    #打印unix时间戳，精确到秒
 1532519829
 ```
+
 ## 本地化设置
 `locale`命令  
 locale - description of multilanguage support  
@@ -219,8 +181,36 @@ hostname: you must be root to change the host name        #要root权限才能�
 redhat
                                                           #重启主机名不变
 ```
-## 搜索命令
-### whatis
+
+## 命令行技巧
+### 移动
+在敲击命令行时，可以用到以下快捷键提高效率
+ctrl + a 移到行首
+ctrl + e 移到行尾
+meta + f 向前移一个word
+mtea + b 向后移一个word
+Ctrl + b 后移一个字符
+Ctrl + f 前移一个字符
+Ctrl + d 删除当前字符
+Backspace 删除前一个字符
+Ctrl + - 撤销
+ctrl + l 清屏
+
+mata键在windows就是alt键，mac osx用户需要手动开，根据约定，meta键是专门用来处理单个词（word）的。
+
+
+### 剪切和粘贴
+ctrl + k 从光标剪切到行尾
+ctrl + y 粘贴
+
+
+### 搜索命令行历史
+ctrl + r 敲入搜索关键字搜索
+继续按ctrl + r搜索结果列表
+ctrl + j 选定当前命令
+ctrl + g 取消搜索
+
+### 搜索命令
 `whatis`命令会精确搜索whatis数据库，给出命令的简介  
 ``` bash
 shiming@pro ➜  ~ whatis cal
@@ -517,10 +507,12 @@ lost+found  shiming
 ⑤请谨慎使用“force”选项，系统将不会提示您确认操作。
 ⑥**使用“创建父级”选项时应小心；无法捕获键入错误。**
 
-### 文件链接
+### 文件软链接
 ```
 ~/.oh-my-zsh/themes/
 ```
+
+
 
 ### 硬盘格式化和挂载
 https://help.aliyun.com/document_detail/25426.html
