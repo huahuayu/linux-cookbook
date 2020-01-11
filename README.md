@@ -1,5 +1,5 @@
 # Linux cookbook
-linux cookbook, linux烹饪书，linux命令总结，linux cli by example  
+linux烹饪书，linux命令总结  
 ## 查看linux版本
 方法一  
 ``` zsh
@@ -35,6 +35,50 @@ linux-gnu
 
 $ echo $OSTYPE
 linux-gnu
+```
+## 查看使用的shell
+方法一：查看$SHELL环境变量
+``` bash
+shiming@pro ➜  ~ echo $SHELL
+/bin/zsh
+```
+
+方法二:echo $0, 据说不是对所有shell都支持
+``` bash
+shiming@pro ➜  ~ echo $0
+-zsh
+```
+
+方法三：敲一个不存在的命令，查看提示
+``` bash
+shiming@pro ➜  ~ tom
+zsh: command not found: tom
+```
+
+查看系统支持的shell
+``` bash
+root@sz ➜  ~ cat /etc/shells
+# /etc/shells: valid login shells
+/bin/sh
+/bin/dash
+/bin/bash
+/bin/rbash
+/bin/zsh
+/usr/bin/zsh
+/usr/bin/tmux
+```
+## 查看系统信息
+使用`uname`命令可以查看系统信息，了解系统信息对安装软件很有帮助，安装软件时必须知道是装32位还是64位，是x86架构还是i686架构，诸如此类。 
+mac示例  
+``` bash
+shiming@pro ➜  ~ uname -a
+Darwin pro 18.2.0 Darwin Kernel Version 18.2.0: Fri Oct  5 19:41:49 PDT 2018; root:xnu-4903.221.2~2/RELEASE_X86_64 x86_64
+```
+
+ubuntu示例  
+``` bash
+root@MNG-BC ➜  ~ uname -a
+Linux MNG-BC 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16 21:00:45 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
 ## 查看硬件信息
@@ -99,21 +143,6 @@ clflush size    : 64
 cache_alignment : 64
 address sizes   : 46 bits physical, 48 bits virtual
 power management:
-```
-
-
-## 查看系统信息
-使用`uname`命令可以查看系统信息，了解系统信息对安装软件很有帮助，安装软件时必须知道是装32位还是64位，是x86架构还是i686架构呢?  
-mac示例  
-``` bash
-shiming@pro ➜  ~ uname -a
-Darwin pro 18.2.0 Darwin Kernel Version 18.2.0: Fri Oct  5 19:41:49 PDT 2018; root:xnu-4903.221.2~2/RELEASE_X86_64 x86_64
-```
-
-ubuntu示例  
-``` bash
-root@MNG-BC ➜  ~ uname -a
-Linux MNG-BC 4.4.0-142-generic #168-Ubuntu SMP Wed Jan 16 21:00:45 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
 ## 系统时间 - date
@@ -230,7 +259,7 @@ Linux不以文件名后缀来识别文件类型，通过file命令可以查看�
 | -------- | -------- |
 | text    | 可读文本    |
 | executable   | 可执行文件    |
-| data    | 除此之外的叫做data，usually “binary” or non-printable |
+| data    | 除此之外的叫做data，一般是二进制的或不可打印的|
 ```
 [shiming@redhat ~]$ file /etc/passwd
 /etc/passwd: ASCII text
@@ -512,6 +541,20 @@ lost+found  shiming
 ~/.oh-my-zsh/themes/
 ```
 
+### 修改文件所有者
+``` bash
+chown newowner file   # 修改file的owner为newowner
+chgrp newgroup file   # 修改file的group为newowner
+chown newowner.newgroup file  # 同时修改file的owner
+```
+
+### 修改文件权限
+``` bash
+chmod +x file
+chmod -x file
+chmod u+x file
+chmod
+```
 
 
 ### 硬盘格式化和挂载
@@ -583,7 +626,7 @@ https://www.tecmint.com/usermod-command-examples/
 `su anotheruser` 将当前用户的环境变量带到新用户下
 `su - anotheruser` 使用新用户的环境变量
 
-### 禁止用户ssh登录
+### 锁住用户
 ```
 root@tool1:~# passwd -l bot  #-l means lock, lock后仍可以使用su - username切换用户
 ```
@@ -672,6 +715,29 @@ sudo systemctl reload ssh
 shiming@pro ➜  ~ ssh shiming@ubuntu
 shiming@ubuntu: Permission denied (publickey).
 ```
+
+### 新建用户默认使用zsh
+修改`/etc/adduser.conf`
+将默认
+``` bash
+DSHELL=/bin/sh
+```
+修改为
+``` bash
+DSHELL=/bin/zsh
+```
+这个改动对`adduser`命令生效
+
+同时修改`/etc/default/useradd`
+```
+SHELL=/bin/sh
+```
+改为
+```
+SHELL=/bin/zsh
+```
+
+
 ## 服务管理
 systemd vs init.d  
 ![](https://raw.githubusercontent.com/huahuayu/img/master/20190602234328.png)
