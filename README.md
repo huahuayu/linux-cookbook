@@ -717,8 +717,7 @@ shiming@ubuntu: Permission denied (publickey).
 ```
 
 ### 新建用户默认使用zsh
-修改`/etc/adduser.conf`
-将默认
+如果使用`adduser`命令新增用户，该命令的配置文件是`/etc/adduser.conf`，修改该文件将默认
 ``` bash
 DSHELL=/bin/sh
 ```
@@ -726,9 +725,8 @@ DSHELL=/bin/sh
 ``` bash
 DSHELL=/bin/zsh
 ```
-这个改动对`adduser`命令生效
 
-同时修改`/etc/default/useradd`
+如果使用`useradd`添加用户则修改`/etc/default/useradd`
 ```
 SHELL=/bin/sh
 ```
@@ -737,6 +735,46 @@ SHELL=/bin/sh
 SHELL=/bin/zsh
 ```
 
+通过以上步骤，新用户确实默认使用zsh，但是因为没有配置`~/.zshrc`文件，新用户在首次登陆的时候zsh会出以下提示,不是太友好：
+```
+This is the Z Shell configuration function for new users,
+zsh-newuser-install.
+You are seeing this message because you have no zsh startup files
+(the files .zshenv, .zprofile, .zshrc, .zlogin in the directory
+~).  This function can help you with a few settings that should
+make your use of the shell easier.
+
+You can:
+
+(q)  Quit and do nothing.  The function will be run again next time.
+
+(0)  Exit, creating the file ~/.zshrc containing just a comment.
+     That will prevent this function being run again.
+
+(1)  Continue to the main menu.
+
+(2)  Populate your ~/.zshrc with the configuration recommended
+     by the system administrator and exit (you will need to edit
+     the file by hand, if so desired).
+
+--- Type one of the keys in parentheses ---
+```
+
+linux可以支持在新建用户时同时将一些文件放到新用户的家目录下，在配置文件`/etc/adduser.conf`和`/etc/default/useradd`中都定义了一个参数
+``` bash
+SKEL=/etc/skel
+```
+这个路径的含义就是，凡是放到这个目录下的文件，都会拷贝到新用户家目录。
+
+新建用户blog做测试，注意`Copying files from /etc/skel`会有这一句。
+```
+root@sz ➜  ~ adduser blog
+Adding user `blog' ...
+Adding new group `blog' (1001) ...
+Adding new user `blog' (1001) with group `blog' ...
+Creating home directory `/home/blog' ...
+Copying files from `/etc/skel' ...
+```
 
 ## 服务管理
 systemd vs init.d  
@@ -1434,6 +1472,9 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 光标右移    | l     |     |
 | 光标下移    | j     |     |
 | 光标上移    | k     |     |
+| 光标移到当前屏幕顶部    | H     |     |
+| 光标移到当前屏幕中部    | M     |     |
+| 光标移到当前屏幕底部    | L     |     |
 | 插入模式    | i     |     |
 | 附加模式    | a     |     |
 | 复制行    | yy or Y     |     |
@@ -1459,6 +1500,7 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 删除到文件开头（包括光标所在行）    | dgg/d1G     |     |
 | 删除到指定字符（包含字符）    | dfX     | 删除到X，包含X    |
 | 删除到指定字符（不包含字符）    | dtX     | 删除到X，不包含X    |
+| 删除到指定正则匹配到的字符（不包含字符）    | d/<regex>     |     |
 | 反向删除到指定字符（包含字符）    | dFX     | 删除到X，包含X    |
 | 反向删除到指定字符（不包含字符）    | dTX     | 删除到X，不包含X    |
 | 删除一行并进入插入模式    | cc     |     |
@@ -1472,11 +1514,11 @@ normal模式和插入模式指针形状如果没有区别（normal模式方块�
 | 另存为    | :w + filename   | 将目前编辑的文件另存为filename    |
 | 保存并退出    | :wq or :ZZ     |     |
 | 不保存退出    | :q!     | q for quit    |
-| 跳到词首    | w     | w for word    |
+| 跳到下一词首    | w     | w for word    |
+| 跳到上一词首    | b     | b for back   |
 | 跳到下2个词首    | 2w     |  以此类推   |
 | 跳到词尾    | e     | e for end    |
 | 跳到下一词尾    | 2e     | 以此类推    |
-| 光标回退    | b     | 回退一个词，到首字母    |
 | 替换光标处字符    | r + <new_char>     |     |
 | 找到该行第一个字母    | f + <char>     |     |
 | 跳到文本末尾    | G     |     |
@@ -2019,6 +2061,31 @@ find . -exec cmd {} \;
 **参考**：
 [35个find示例](https://www.tecmint.com/35-practical-examples-of-linux-find-command/) 
 [linux find中的-print0和xargs中-0的奥妙](https://www.cnblogs.com/hnhycnlc888/p/9199738.html)
+
+### sed
+sed的意思是Stream EDitor，即流式编辑器，sed命令实现对文件的”增删改查“，玩转sed是写自动化脚本必须的基础之一。
+
+sed遵循简单的工作流：
+1. 读取（从输入中读取某一行）
+2. 执行（在某一行上执行sed命令）
+3. 显示（把结果显示在输出中）
+4. 默认是显示修改后内容，不会修改原文件，除非使用-i 参数。
+
+
+查找并替换文件中搜索到的内容
+linux下:
+``` bash
+sed -i 's/original/new/g' file.txt
+```
+mac下的sed命令略有区别，前面还需要指定一个备份文件后缀。
+``` bash
+sed -i '.bup' 's/original/new/g' file.txt
+
+# 如果不需要备份也可以这么写的
+sed -i '' 's/original/new/g' file.txt
+```
+
+### awk
 
 ## 实用技巧
 ### 删除阿里云盾
